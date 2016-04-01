@@ -16,10 +16,12 @@ snowball_headers= \
   runtime/header.h
 
 CFLAGS=-Iinclude -O2 -march=native -Wall -Werror
-all: libstemmer.o stemwords
+all: libstemmer.o stemwords usage
 libstemmer.o: $(snowball_sources:.c=.o)
 	$(AR) -cru $@ $^
 stemwords: examples/stemwords.o libstemmer.o
+	$(CC) $(CFLAGS) -o $@ $^
+usage: examples/usage.o libstemmer.o
 	$(CC) $(CFLAGS) -o $@ $^
 clean:
 	rm -f stemwords *.o src_c/*.o runtime/*.o libstemmer/*.o
