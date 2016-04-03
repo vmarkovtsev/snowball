@@ -15,13 +15,16 @@ snowball_headers= \
   runtime/api.h \
   runtime/header.h
 
-CFLAGS=-Iinclude -O2 -march=native -Wall -Werror
-all: libstemmer.o stemwords usage
+CPPFLAGS=-O2 -march=native -Wall -Werror -I/usr/local/include -L/usr/local/lib
+CFLAGS=-Iinclude
+all: libstemmer.o stemwords usage tokenize
 libstemmer.o: $(snowball_sources:.c=.o)
 	$(AR) -cru $@ $^
 stemwords: examples/stemwords.o libstemmer.o
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^
 usage: examples/usage.o libstemmer.o
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^
+tokenize: examples/tokenize.cc
+	$(CXX) $(CPPFLAGS) -lunistring examples/tokenize.cc -o tokenize
 clean:
 	rm -f stemwords *.o src_c/*.o runtime/*.o libstemmer/*.o
